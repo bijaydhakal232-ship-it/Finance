@@ -1,0 +1,706 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bijay Dhakal | Finance Manager</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f1f5f9;color:#172033}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:8px;padding:11px 15px}
+.app{display:flex;min-height:100vh}
+.sidebar{width:235px;background:#10203d;color:white;padding:24px 15px;flex-shrink:0}
+.brand{font-size:19px;font-weight:bold;padding:5px 10px 25px}
+.brand small{display:block;color:#94a3b8;font-size:11px;margin-top:7px}
+.nav{display:flex;flex-direction:column;gap:7px}
+.nav button{background:transparent;color:#cbd5e1;text-align:left}
+.nav button.active,.nav button:hover{background:#2563eb;color:white}
+.main{flex:1;min-width:0;padding:25px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:25px;flex-wrap:wrap}
+.top h1{font-size:25px}
+.muted{color:#64748b;font-size:13px;margin-top:5px}
+.profile-mini{display:flex;align-items:center;gap:10px}
+.profile-mini img{width:43px;height:43px;border-radius:50%;object-fit:cover}
+.panel{display:none}
+.panel.active{display:block}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.card,.box{background:white;border-radius:13px;padding:19px;box-shadow:0 3px 12px #00000008}
+.card p{font-size:13px;color:#64748b;margin-bottom:12px}
+.card h2{font-size:23px;overflow-wrap:anywhere}
+.green{color:#16a34a}.red{color:#dc2626}.blue{color:#2563eb}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:17px}
+.box{margin-bottom:18px}
+.box h3{font-size:17px;margin-bottom:17px}
+form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{min-width:0}
+.field.full{grid-column:1/-1}
+label{display:block;font-size:13px;font-weight:bold;margin-bottom:7px}
+input,select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;background:white;color:#172033}
+.primary{background:#2563eb;color:white}
+.secondary{background:#e2e8f0;color:#172033}
+.danger{background:#fee2e2;color:#b91c1c}
+.success{background:#dcfce7;color:#166534}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{text-align:left;padding:12px 9px;border-bottom:1px solid #e2e8f0;font-size:13px}
+th{color:#64748b}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px}
+.filters>*{flex:1;min-width:130px}
+.smallbtn{padding:7px 10px;font-size:12px}
+.barline{height:11px;border-radius:10px;background:#e2e8f0;overflow:hidden;margin:9px 0}
+.barline span{display:block;height:100%;background:#2563eb;border-radius:10px}
+.goal{border-bottom:1px solid #e2e8f0;padding:12px 0}
+.goal:last-child{border:0}
+.goaltop{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+.empty{text-align:center;color:#94a3b8;padding:25px}
+.profile{display:flex;align-items:center;gap:15px;margin-bottom:20px}
+.profile img{width:90px;height:90px;border-radius:50%;object-fit:cover;background:#dbeafe}
+.note{font-size:12px;color:#64748b;line-height:1.6}
+.stat{font-size:13px;color:#64748b}
+.chart{display:flex;align-items:end;gap:8px;height:170px;padding-top:12px}
+.chartcol{flex:1;min-width:0;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:5px}
+.chartbar{width:65%;min-height:3px;border-radius:5px 5px 0 0;background:#2563eb}
+.chartlabel{font-size:10px;color:#64748b}
+.chartvalue{font-size:9px;color:#64748b}
+.hidden{display:none!important}
+@media(max-width:850px){
+ .cards{grid-template-columns:repeat(2,1fr)}
+ .sidebar{width:190px}
+ .grid2{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+ .app{display:block}
+ .sidebar{width:100%;padding:13px}
+ .brand{padding:5px 5px 12px}
+ .nav{flex-direction:row;overflow-x:auto}
+ .nav button{white-space:nowrap;font-size:12px;padding:10px}
+ .main{padding:14px}
+ .cards{grid-template-columns:1fr 1fr;gap:9px}
+ .card{padding:13px}
+ .card h2{font-size:18px}
+ form{grid-template-columns:1fr}
+ .field.full{grid-column:auto}
+ .top h1{font-size:21px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+ <div class="brand">💰 MY FINANCE
+  <small>PERSONAL MONEY MANAGER</small>
+ </div>
+ <nav class="nav">
+  <button class="active" data-tab="overview">🏠 Overview</button>
+  <button data-tab="transactions">📝 Transactions</button>
+  <button data-tab="budget">🎯 Budget & Savings</button>
+  <button data-tab="reports">📊 Reports</button>
+  <button data-tab="settings">⚙️ My Profile & Settings</button>
+ </nav>
+</aside>
+
+<main class="main">
+<header class="top">
+ <div>
+  <h1 id="pageTitle">Dashboard Overview</h1>
+  <p class="muted" id="today"></p>
+ </div>
+ <div class="profile-mini">
+  <img id="smallPhoto" alt="Profile">
+  <div><b id="smallName">Bijay Dhakal</b><p class="muted">Personal Account</p></div>
+ </div>
+</header>
+
+<!-- OVERVIEW -->
+<section id="overview" class="panel active">
+ <div class="cards">
+  <div class="card"><p>Total Income</p><h2 class="green" id="totalIncome">रु 0</h2></div>
+  <div class="card"><p>Total Expenses</p><h2 class="red" id="totalExpense">रु 0</h2></div>
+  <div class="card"><p>Available Balance</p><h2 class="blue" id="balance">रु 0</h2></div>
+  <div class="card"><p>Current Month Savings</p><h2 id="monthSavings">रु 0</h2></div>
+ </div>
+
+ <div class="grid2">
+  <div class="box">
+   <h3>Monthly Money Summary</h3>
+   <p class="stat" id="summaryMonth"></p>
+   <div id="overviewChart" class="chart"></div>
+   <p class="note">Blue bars represent income; red bars represent expenses.</p>
+  </div>
+  <div class="box">
+   <h3>My Monthly Budget</h3>
+   <div id="budgetOverview"></div>
+   <p class="note" style="margin-top:12px">Update your spending limits in Budget & Savings.</p>
+  </div>
+ </div>
+
+ <div class="box">
+  <h3>Recent Transactions</h3>
+  <div class="tablewrap"><table>
+   <thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Note</th><th>Amount</th></tr></thead>
+   <tbody id="recentRows"></tbody>
+  </table></div>
+ </div>
+</section>
+
+<!-- TRANSACTIONS -->
+<section id="transactions" class="panel">
+ <div class="box">
+  <h3 id="formTitle">Add New Transaction</h3>
+  <form id="transactionForm">
+   <input type="hidden" id="editId">
+   <div class="field">
+    <label>Transaction Type</label>
+    <select id="type">
+     <option value="income">Income</option>
+     <option value="expense">Expense</option>
+    </select>
+   </div>
+   <div class="field">
+    <label>Amount (NPR)</label>
+    <input type="number" id="amount" min="0.01" step="0.01" placeholder="Enter amount" required>
+   </div>
+   <div class="field">
+    <label>Category</label>
+    <select id="category">
+     <option>Salary</option><option>Freelancing</option>
+     <option>Business</option><option>Photography</option>
+     <option>Video Editing</option><option>Food</option>
+     <option>Travel</option><option>Shopping</option>
+     <option>Rent</option><option>Bills</option>
+     <option>Education</option><option>Health</option>
+     <option>Entertainment</option><option>Transport</option>
+     <option>Family</option><option>Other</option>
+    </select>
+   </div>
+   <div class="field">
+    <label>Date</label>
+    <input type="date" id="date" required>
+   </div>
+   <div class="field">
+    <label>Payment Method</label>
+    <select id="method">
+     <option>Cash</option><option>eSewa</option>
+     <option>Khalti</option><option>Bank Transfer</option>
+     <option>Card</option><option>Other</option>
+    </select>
+   </div>
+   <div class="field">
+    <label>Note / Description</label>
+    <input id="description" placeholder="What was this money for?">
+   </div>
+   <div class="field full actions">
+    <button class="primary" type="submit" id="saveButton">Save Transaction</button>
+    <button class="secondary hidden" type="button" id="cancelEdit">Cancel Edit</button>
+   </div>
+  </form>
+ </div>
+
+ <div class="box">
+  <h3>All Transactions</h3>
+  <div class="filters">
+   <input id="search" placeholder="Search notes or category">
+   <select id="filterType">
+    <option value="all">All Types</option>
+    <option value="income">Income</option>
+    <option value="expense">Expense</option>
+   </select>
+   <input type="month" id="filterMonth">
+  </div>
+  <div class="tablewrap"><table>
+   <thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Method</th><th>Description</th><th>Amount</th><th>Action</th></tr></thead>
+   <tbody id="transactionRows"></tbody>
+  </table></div>
+ </div>
+</section>
+
+<!-- BUDGET AND SAVINGS -->
+<section id="budget" class="panel">
+ <div class="grid2">
+  <div class="box">
+   <h3>Set Monthly Expense Budget</h3>
+   <form id="budgetForm">
+    <div class="field full">
+     <label>Monthly Spending Limit (NPR)</label>
+     <input type="number" id="budgetAmount" min="0" step="0.01" placeholder="Example: 20000" required>
+    </div>
+    <div class="field full">
+     <button class="primary">Save Monthly Budget</button>
+    </div>
+   </form>
+   <div id="budgetDetails" style="margin-top:20px"></div>
+  </div>
+
+  <div class="box">
+   <h3>My Savings Goal</h3>
+   <form id="goalForm">
+    <div class="field full">
+     <label>Goal Name</label>
+     <input id="goalName" placeholder="Example: Buy a new camera" required>
+    </div>
+    <div class="field">
+     <label>Target Amount</label>
+     <input type="number" id="goalTarget" min="1" required>
+    </div>
+    <div class="field">
+     <label>Already Saved</label>
+     <input type="number" id="goalSaved" min="0" value="0" required>
+    </div>
+    <div class="field full">
+     <label>Target Date</label>
+     <input type="date" id="goalDate">
+    </div>
+    <div class="field full">
+     <button class="primary">Add Savings Goal</button>
+    </div>
+   </form>
+  </div>
+ </div>
+ <div class="box">
+  <h3>My Savings Goals</h3>
+  <div id="goalsList"></div>
+ </div>
+</section>
+
+<!-- REPORTS -->
+<section id="reports" class="panel">
+ <div class="cards">
+  <div class="card"><p>Selected Month Income</p><h2 class="green" id="reportIncome">रु 0</h2></div>
+  <div class="card"><p>Selected Month Expenses</p><h2 class="red" id="reportExpense">रु 0</h2></div>
+  <div class="card"><p>Monthly Difference</p><h2 class="blue" id="reportNet">रु 0</h2></div>
+  <div class="card"><p>Transactions</p><h2 id="reportCount">0</h2></div>
+ </div>
+ <div class="box">
+  <h3>Choose Report Month</h3>
+  <input type="month" id="reportMonth">
+ </div>
+ <div class="grid2">
+  <div class="box"><h3>Income vs Expenses</h3><div id="reportChart" class="chart"></div></div>
+  <div class="box"><h3>Expense by Category</h3><div id="categoryReport"></div></div>
+ </div>
+</section>
+
+<!-- SETTINGS -->
+<section id="settings" class="panel">
+ <div class="box">
+  <h3>My Personal Profile</h3>
+  <div class="profile">
+   <img id="profilePhoto" alt="Bijay Dhakal profile">
+   <div><b id="profileDisplayName">Bijay Dhakal</b><p class="muted">Personal Finance Account</p></div>
+  </div>
+  <form id="profileForm">
+   <div class="field full">
+    <label>Your Name</label>
+    <input id="userName" value="Bijay Dhakal" required>
+   </div>
+   <div class="field full">
+    <label>Profile Photograph</label>
+    <input type="file" id="photoInput" accept="image/*">
+   </div>
+   <div class="field full">
+    <button class="primary">Save Profile</button>
+   </div>
+  </form>
+ </div>
+
+ <div class="box">
+  <h3>Data Backup & Restore</h3>
+  <p class="note">Download a complete JSON backup of your profile, transactions, budget and goals. Restore it later on this browser or another device.</p>
+  <div class="actions">
+   <button class="success" id="backupButton">Download Full Backup</button>
+   <button class="secondary" id="restoreButton">Restore Backup</button>
+   <input type="file" id="restoreFile" accept=".json,application/json" class="hidden">
+   <button class="success" id="csvButton">Export Transactions CSV</button>
+  </div>
+ </div>
+
+ <div class="box">
+  <h3>Reset My Dashboard</h3>
+  <p class="note">This permanently deletes your locally stored dashboard data. Download a backup first.</p>
+  <div class="actions">
+   <button class="danger" id="resetButton">Delete All Dashboard Data</button>
+  </div>
+ </div>
+</section>
+
+<footer class="note" style="text-align:center;padding:20px">
+ Personal Finance Manager · Bijay Dhakal · NPR
+</footer>
+</main>
+</div>
+
+<script>
+const KEY="bijay_personal_finance_v3";
+const DEFAULT={
+ name:"Bijay Dhakal",photo:"",transactions:[],
+ budget:0,goals:[]
+};
+let data;
+
+try{
+ const stored=JSON.parse(localStorage.getItem(KEY)||"null");
+ data=stored&&typeof stored==="object"?{...DEFAULT,...stored}: {...DEFAULT};
+ if(!Array.isArray(data.transactions))data.transactions=[];
+ if(!Array.isArray(data.goals))data.goals=[];
+}catch{data={...DEFAULT};}
+
+const $=id=>document.getElementById(id);
+const today=()=>{
+ const d=new Date();
+ return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+};
+const monthNow=()=>today().slice(0,7);
+const money=n=>"रु "+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2,minimumFractionDigits:2});
+const validImage=s=>typeof s==="string"&&s.startsWith("data:image/")&&s.length<4000000;
+
+function persist(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(data));
+ }catch{
+  alert("Browser storage is full. Please export a backup and reduce stored data.");
+ }
+ render();
+}
+
+function total(type,items=data.transactions){
+ return items.filter(t=>t.type===type).reduce((s,t)=>s+Number(t.amount),0);
+}
+function byMonth(month){
+ return data.transactions.filter(t=>t.date&&t.date.startsWith(month));
+}
+function safeCell(value){
+ const td=document.createElement("td");
+ td.textContent=String(value??"");
+ return td;
+}
+function emptyRow(target,cols,message){
+ target.innerHTML="";
+ const tr=document.createElement("tr"),td=document.createElement("td");
+ td.colSpan=cols;td.className="empty";td.textContent=message;
+ tr.append(td);target.append(tr);
+}
+function progress(value,target){
+ return target>0?Math.min(100,Math.max(0,value/target*100)):0;
+}
+function setProfile(){
+ $("smallName").textContent=data.name;
+ $("profileDisplayName").textContent=data.name;
+ $("userName").value=data.name;
+ const photo=validImage(data.photo)?data.photo:"https://placehold.co/200x200/2563eb/ffffff?text=BD";
+ ["smallPhoto","profilePhoto"].forEach(id=>$(id).src=photo);
+}
+function chart(target,items,month){
+ target.innerHTML="";
+ const labels=[];
+ for(let i=1;i<=6;i++){
+  const d=new Date(month+"-01T12:00:00");
+  d.setMonth(d.getMonth()-6+i);
+  labels.push(d.toISOString().slice(0,7));
+ }
+ const values=labels.map(m=>{
+  const list=byMonth(m);
+  return {month:m,income:total("income",list),expense:total("expense",list)};
+ });
+ const max=Math.max(1,...values.flatMap(v=>[v.income,v.expense]));
+ values.forEach(v=>{
+  const col=document.createElement("div");col.className="chartcol";
+  const inc=document.createElement("div");
+  inc.className="chartbar";
+  inc.style.height=Math.max(3,v.income/max*100)+"%";
+  inc.title="Income "+money(v.income);
+  const exp=document.createElement("div");
+  exp.className="chartbar";exp.style.background="#ef4444";
+  exp.style.height=Math.max(3,v.expense/max*100)+"%";
+  exp.title="Expense "+money(v.expense);
+  const label=document.createElement("div");label.className="chartlabel";
+  label.textContent=v.month.slice(5);
+  const value=document.createElement("div");value.className="chartvalue";
+  value.textContent="I / E";
+  col.append(inc,exp,value,label);target.append(col);
+ });
+}
+function budgetUI(){
+ const month=byMonth(monthNow());
+ const spent=total("expense",month);
+ const percent=progress(spent,data.budget);
+ const html=data.budget>0?
+ `<p>Monthly limit: <b>${money(data.budget)}</b></p>
+ <p style="margin-top:8px">Spent: <b class="red">${money(spent)}</b></p>
+ <div class="barline"><span style="width:${percent}%"></span></div>
+ <p class="note">${Math.round(percent)}% used · ${money(data.budget-spent)} remaining</p>
+ ${spent>data.budget?'<p class="red note">You have exceeded your budget.</p>':''}`:
+ '<p class="note">No budget set yet. Add your monthly spending limit.</p>';
+ $("budgetOverview").innerHTML=html;
+ $("budgetDetails").innerHTML=html;
+}
+function renderTransactions(){
+ const search=$("search").value.toLowerCase();
+ const type=$("filterType").value;
+ const month=$("filterMonth").value;
+ const list=data.transactions.filter(t=>
+  (type==="all"||t.type===type)&&
+  (!month||t.date.startsWith(month))&&
+  [t.category,t.description,t.method,t.date].join(" ").toLowerCase().includes(search)
+ ).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+ const tbody=$("transactionRows");tbody.innerHTML="";
+ if(!list.length){emptyRow(tbody,7,"No transactions found.");return;}
+ list.forEach(t=>{
+  const tr=document.createElement("tr");
+  [t.date,t.type,t.category,t.method,t.description||"-"].forEach(v=>tr.append(safeCell(v)));
+  const amount=safeCell((t.type==="income"?"+":"-")+money(t.amount));
+  amount.className=t.type==="income"?"green":"red";tr.append(amount);
+  const td=document.createElement("td");
+  const edit=document.createElement("button");edit.textContent="Edit";edit.className="secondary smallbtn";
+  edit.onclick=()=>editTransaction(t.id);
+  const del=document.createElement("button");del.textContent="Delete";del.className="danger smallbtn";
+  del.style.marginLeft="5px";del.onclick=()=>deleteTransaction(t.id);
+  td.append(edit,del);tr.append(td);tbody.append(tr);
+ });
+}
+function renderRecent(){
+ const tbody=$("recentRows");tbody.innerHTML="";
+ const list=[...data.transactions].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id).slice(0,6);
+ if(!list.length){emptyRow(tbody,5,"No transactions yet.");return;}
+ list.forEach(t=>{
+  const tr=document.createElement("tr");
+  [t.date,t.type,t.category,t.description||"-"].forEach(v=>tr.append(safeCell(v)));
+  const td=safeCell((t.type==="income"?"+":"-")+money(t.amount));
+  td.className=t.type==="income"?"green":"red";tr.append(td);tbody.append(tr);
+ });
+}
+function renderGoals(){
+ const target=$("goalsList");target.innerHTML="";
+ if(!data.goals.length){target.innerHTML='<p class="empty">No savings goals added yet.</p>';return;}
+ data.goals.forEach(g=>{
+  const div=document.createElement("div");div.className="goal";
+  const pct=progress(g.saved,g.target);
+  const top=document.createElement("div");top.className="goaltop";
+  const title=document.createElement("b");title.textContent=g.name;
+  const amount=document.createElement("span");amount.textContent=money(g.saved)+" / "+money(g.target);
+  top.append(title,amount);
+  const bar=document.createElement("div");bar.className="barline";
+  const fill=document.createElement("span");fill.style.width=pct+"%";bar.append(fill);
+  const info=document.createElement("p");info.className="note";
+  info.textContent=Math.round(pct)+"% saved · Target date: "+(g.date||"Not set");
+  const actions=document.createElement("div");actions.className="actions";
+  const add=document.createElement("button");add.className="success smallbtn";add.textContent="Add Savings";
+  add.onclick=()=>{
+   const n=prompt("How much did you save?", "0");
+   if(n===null)return;
+   const value=Number(n);
+   if(!Number.isFinite(value)||value<=0){alert("Enter a valid amount.");return;}
+   g.saved+=value;persist();
+  };
+  const del=document.createElement("button");del.className="danger smallbtn";del.textContent="Delete Goal";
+  del.onclick=()=>{if(confirm("Delete this goal?")){data.goals=data.goals.filter(x=>x.id!==g.id);persist();}};
+  actions.append(add,del);div.append(top,bar,info,actions);target.append(div);
+ });
+}
+function renderReports(){
+ const month=$("reportMonth").value||monthNow();
+ const list=byMonth(month);
+ const inc=total("income",list),exp=total("expense",list);
+ $("reportIncome").textContent=money(inc);
+ $("reportExpense").textContent=money(exp);
+ $("reportNet").textContent=money(inc-exp);
+ $("reportCount").textContent=list.length;
+ chart($("reportChart"),list,month);
+ const groups={};
+ list.filter(t=>t.type==="expense").forEach(t=>groups[t.category]=(groups[t.category]||0)+t.amount);
+ const el=$("categoryReport");el.innerHTML="";
+ const entries=Object.entries(groups).sort((a,b)=>b[1]-a[1]);
+ if(!entries.length){el.innerHTML='<p class="empty">No expenses this month.</p>';return;}
+ entries.forEach(([name,value])=>{
+  const row=document.createElement("div");row.style.marginBottom="13px";
+  const line=document.createElement("div");line.className="goaltop";
+  const a=document.createElement("b");a.textContent=name;
+  const b=document.createElement("span");b.textContent=money(value);
+  line.append(a,b);
+  const bar=document.createElement("div");bar.className="barline";
+  const fill=document.createElement("span");fill.style.width=(value/exp*100)+"%";bar.append(fill);
+  row.append(line,bar);el.append(row);
+ });
+}
+function render(){
+ const income=total("income"),expense=total("expense");
+ $("totalIncome").textContent=money(income);
+ $("totalExpense").textContent=money(expense);
+ $("balance").textContent=money(income-expense);
+ const monthList=byMonth(monthNow());
+ $("monthSavings").textContent=money(total("income",monthList)-total("expense",monthList));
+ $("summaryMonth").textContent="Last 6 months";
+ chart($("overviewChart"),data.transactions,monthNow());
+ budgetUI();renderRecent();renderTransactions();renderGoals();renderReports();setProfile();
+}
+
+// NAVIGATION
+const titles={
+ overview:"Dashboard Overview",transactions:"My Transactions",
+ budget:"Budget & Savings",reports:"Financial Reports",
+ settings:"Profile & Settings"
+};
+document.querySelectorAll("[data-tab]").forEach(btn=>{
+ btn.onclick=()=>{
+  document.querySelectorAll("[data-tab]").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  btn.classList.add("active");$(btn.dataset.tab).classList.add("active");
+  $("pageTitle").textContent=titles[btn.dataset.tab];
+ };
+});
+
+// ADD AND EDIT TRANSACTIONS
+$("transactionForm").onsubmit=e=>{
+ e.preventDefault();
+ const amount=Number($("amount").value);
+ if(!Number.isFinite(amount)||amount<=0){alert("Enter a valid amount.");return;}
+ const id=$("editId").value;
+ const record={
+  id:id?Number(id):Date.now(),
+  type:$("type").value,amount,
+  category:$("category").value,date:$("date").value,
+  method:$("method").value,
+  description:$("description").value.trim()
+ };
+ if(!record.date){alert("Choose a date.");return;}
+ if(id)data.transactions=data.transactions.map(t=>t.id===Number(id)?record:t);
+ else data.transactions.push(record);
+ cancelEdit();persist();
+};
+function editTransaction(id){
+ const t=data.transactions.find(x=>x.id===id);if(!t)return;
+ $("editId").value=t.id;$("type").value=t.type;
+ $("amount").value=t.amount;$("category").value=t.category;
+ $("date").value=t.date;$("method").value=t.method||"Cash";
+ $("description").value=t.description||"";
+ $("formTitle").textContent="Edit Transaction";
+ $("saveButton").textContent="Update Transaction";
+ $("cancelEdit").classList.remove("hidden");
+ document.querySelector('[data-tab="transactions"]').click();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function cancelEdit(){
+ $("transactionForm").reset();$("editId").value="";
+ $("date").value=today();$("formTitle").textContent="Add New Transaction";
+ $("saveButton").textContent="Save Transaction";
+ $("cancelEdit").classList.add("hidden");
+}
+$("cancelEdit").onclick=cancelEdit;
+function deleteTransaction(id){
+ if(!confirm("Delete this transaction?"))return;
+ data.transactions=data.transactions.filter(t=>t.id!==id);persist();
+}
+["search","filterType","filterMonth"].forEach(id=>{
+ $(id).addEventListener(id==="search"?"input":"change",renderTransactions);
+});
+
+// BUDGET
+$("budgetForm").onsubmit=e=>{
+ e.preventDefault();
+ const n=Number($("budgetAmount").value);
+ if(!Number.isFinite(n)||n<0){alert("Enter a valid budget.");return;}
+ data.budget=n;persist();alert("Monthly budget saved.");
+};
+
+// GOALS
+$("goalForm").onsubmit=e=>{
+ e.preventDefault();
+ const target=Number($("goalTarget").value),saved=Number($("goalSaved").value);
+ if(!Number.isFinite(target)||target<=0||!Number.isFinite(saved)||saved<0){
+  alert("Enter valid goal amounts.");return;
+ }
+ data.goals.push({
+  id:Date.now(),name:$("goalName").value.trim(),
+  target,saved,date:$("goalDate").value
+ });
+ $("goalForm").reset();persist();
+};
+
+// PROFILE
+$("profileForm").onsubmit=e=>{
+ e.preventDefault();data.name=$("userName").value.trim()||"Bijay Dhakal";
+ persist();alert("Profile updated.");
+};
+$("photoInput").onchange=e=>{
+ const file=e.target.files[0];if(!file)return;
+ if(!file.type.startsWith("image/")||file.size>5*1024*1024){
+  alert("Choose an image smaller than 5 MB.");return;
+ }
+ const reader=new FileReader();
+ reader.onload=()=>{
+  const img=new Image();
+  img.onload=()=>{
+   const c=document.createElement("canvas"),scale=Math.min(1,500/Math.max(img.width,img.height));
+   c.width=img.width*scale;c.height=img.height*scale;
+   c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+   data.photo=c.toDataURL("image/jpeg",.8);persist();
+  };
+  img.src=reader.result;
+ };
+ reader.readAsDataURL(file);
+};
+
+// BACKUP AND RESTORE
+$("backupButton").onclick=()=>{
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ downloadBlob(blob,"Bijay-Dhakal-Finance-Backup.json");
+};
+function downloadBlob(blob,name){
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=name;a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+$("restoreButton").onclick=()=>$("restoreFile").click();
+$("restoreFile").onchange=e=>{
+ const file=e.target.files[0];if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const obj=JSON.parse(reader.result);
+   if(!obj||!Array.isArray(obj.transactions)||!Array.isArray(obj.goals)||
+      typeof obj.name!=="string"||!Number.isFinite(Number(obj.budget))||
+      obj.transactions.some(t=>!t||!["income","expense"].includes(t.type)||
+       !Number.isFinite(Number(t.amount))||Number(t.amount)<=0||
+       !Number.isSafeInteger(t.id)||typeof t.date!=="string")||
+      obj.goals.some(g=>!g||typeof g.name!=="string"||
+       !Number.isFinite(Number(g.target))||Number(g.target)<=0||
+       !Number.isFinite(Number(g.saved))||Number(g.saved)<0)||
+      (obj.photo&&!validImage(obj.photo))){
+    throw Error("Invalid backup");
+   }
+   if(confirm("Replace your current dashboard data with this backup?")){
+    data={...DEFAULT,...obj};persist();alert("Backup restored.");
+   }
+  }catch{alert("Invalid or unsupported backup file.");}
+ };
+ reader.readAsText(file);e.target.value="";
+};
+
+// CSV
+$("csvButton").onclick=()=>{
+ const rows=[["Date","Type","Category","Method","Description","Amount"],
+ ...data.transactions.map(t=>[t.date,t.type,t.category,t.method,t.description,t.amount])];
+ const csv="\uFEFF"+rows.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
+ downloadBlob(new Blob([csv],{type:"text/csv;charset=utf-8"}),"Bijay-Finance-Transactions.csv");
+};
+
+// RESET
+$("resetButton").onclick=()=>{
+ if(!confirm("Permanently delete ALL your finance records, goals and profile photo?"))return;
+ data={...DEFAULT,transactions:[],goals:[]};
+ try{localStorage.removeItem(KEY);}catch{}
+ cancelEdit();persist();alert("Dashboard reset.");
+};
+
+// INITIALIZE
+$("date").value=today();
+$("reportMonth").value=monthNow();
+$("reportMonth").onchange=renderReports;
+$("today").textContent=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+render();
+</script>
+</body>
+</html>
